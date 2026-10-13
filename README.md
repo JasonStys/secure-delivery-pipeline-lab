@@ -7,6 +7,8 @@ Created by **Jason Stys** — [GitHub](https://github.com/JasonStys) · [LinkedI
 
 A working DevSecOps reference that builds a small application, gates its release on tests and security checks, creates keyless GitHub provenance, and rejects altered or incorrectly signed downloads before lab deployment.
 
+[Download verified release v1.0.1](https://github.com/JasonStys/secure-delivery-pipeline-lab/releases/tag/v1.0.1) · [Measured validation and security evidence](docs/reports/validation-1.0.1.md). Published-source checks: 95 tests on all four OS/Python lanes, 91.58% combined statement/branch coverage, nine live cryptographic scenarios on hosted Linux and independently on Windows. Follow the verification instructions below before executing a downloaded package.
+
 The application is deliberately modest: a dependency-free inventory CLI using exact cents. The portfolio evidence is the **delivery system**, its trust boundaries, and its measured adversarial tests—not a collection of scanner screenshots.
 
 ## What works
