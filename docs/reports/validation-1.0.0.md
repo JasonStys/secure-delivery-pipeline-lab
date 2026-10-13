@@ -4,7 +4,7 @@ Author: Jason Stys. Date: 2026-10-13. Status: local evidence collected; GitHub C
 
 ## Observed local evidence
 
-Windows, Python 3.14.6: 91 pytest cases passed, no skips; deterministic 100-example monetary property test included. Branch-inclusive delivery coverage 91.56% (gate >=85%). Ruff lint/format and strict mypy for seven delivery modules passed. Real authored zipapp input/health and staged fixture rollback executed; external signature service was mocked only in offline unit/integration cases.
+Windows, Python 3.14.6: 93 pytest cases passed, no skips; deterministic 100-example monetary property test included. Branch-inclusive delivery coverage 91.56% (gate >=85%). Ruff lint/format and strict mypy for seven delivery modules passed. The actual SBOM passed the official CycloneDX JSON 1.6 schema validator. Real authored zipapp input/health and staged fixture rollback executed; external signature service was mocked only in offline unit/integration cases.
 
 10,000 inventory records, 30 actual iterations: p50 18.608 ms, p95 23.943 ms; 537,410 rows/sec at p50; 655,576 peak traced bytes. Gate: p95 <1000 ms and traced peak <8 MiB. These are host-specific observations, not universal throughput promises.
 
@@ -20,7 +20,7 @@ Before CI: account billing meter 0.5 GB /0.5 GB included (100%); retained artifa
 
 ## Repairs during implementation
 
-Initial cross-platform type checking treated the Unix lock branch as reachable on Windows; use explicit `sys.platform` guards so each real platform checks its own locking API. The dependency lock was regenerated with pip included and hash-pinned. No test/coverage budget was lowered.
+Initial cross-platform type checking treated the Unix lock branch as reachable on Windows; use explicit `sys.platform` guards so each real platform checks its own locking API. The line-map generator initially confused its own marker string literal with a header; anchor markers to whole comment lines and add an idempotence regression. The official SBOM validator's optional JSON validation extra was explicitly added and hash-locked. The dependency lock was regenerated with pip included and hash-pinned. No test/coverage budget was lowered.
 
 ## Limitations
 

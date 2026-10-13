@@ -31,4 +31,3 @@ ignore = ["E501"]
 python_version = "3.12"
 strict = true
 files = ["delivery"]
-
