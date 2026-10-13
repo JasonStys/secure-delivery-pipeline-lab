@@ -20,6 +20,8 @@ Before CI: account billing meter 0.5 GB /0.5 GB included (100%); retained artifa
 
 ## Repairs during implementation
 
+First public CI source `615374d734499fbf5fd3ae7c959c0f3e1c515c45`: [Validate 38435377421](https://github.com/JasonStys/secure-delivery-pipeline-lab/actions/runs/38435377421) passed all four Python/OS lanes and the security-scanner job, but the actual Debian image gate rejected 88 HIGH and 3 CRITICAL known vulnerabilities. [CodeQL 38435377409](https://github.com/JasonStys/secure-delivery-pipeline-lab/actions/runs/38435377409) completed and correctly reported a world-readable scanner-file permission. Neither was ignored: scanner binaries became owner-only, the unused Debian package surface was replaced with a smaller patched Alpine runtime, pip was removed from the image, and the release gate now also requires zero open CodeQL findings. No vulnerable image/release was published. The original failure remains visible.
+
 Initial cross-platform type checking treated the Unix lock branch as reachable on Windows; use explicit `sys.platform` guards so each real platform checks its own locking API. The line-map generator initially confused its own marker string literal with a header; anchor markers to whole comment lines and add an idempotence regression. The official SBOM validator's optional JSON validation extra was explicitly added and hash-locked. The dependency lock was regenerated with pip included and hash-pinned. No test/coverage budget was lowered.
 
 ## Limitations

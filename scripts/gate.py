@@ -1,23 +1,24 @@
 """Trusted tag/exact-SHA release gate using read-only GitHub metadata. Jason Stys."""
 # BEGIN CODE MAP (generated; python scripts/code_map.py)
-# definition: api — line 37
-# parameter: endpoint — line 37
-# variable: result — line 39
-# definition: main — line 47
-# variable: repository — line 49
-# variable: reference — line 50
-# variable: commit — line 51
-# variable: version — line 54
-# variable: policy — line 55
-# variable: tag — line 56
-# variable: branch — line 57
-# variable: checked — line 62
-# variable: workflow — line 63
-# variable: response — line 64
-# parameter: item — line 67
-# variable: runs — line 67
-# variable: output — line 71
-# variable: stream — line 72
+# definition: api — line 38
+# parameter: endpoint — line 38
+# variable: result — line 40
+# definition: main — line 48
+# variable: repository — line 50
+# variable: reference — line 51
+# variable: commit — line 52
+# variable: version — line 55
+# variable: policy — line 56
+# variable: tag — line 57
+# variable: branch — line 58
+# variable: checked — line 63
+# variable: workflow — line 64
+# variable: response — line 65
+# parameter: item — line 68
+# variable: runs — line 68
+# variable: alerts — line 72
+# variable: output — line 79
+# variable: stream — line 80
 # END CODE MAP
 
 from __future__ import annotations
@@ -34,7 +35,7 @@ from delivery.io import Rejected
 from delivery.verify import REPOSITORY, TrustPolicy
 
 
-def api(endpoint: str) -> dict[str, object]:
+def api(endpoint: str) -> dict[str, object] | list[object]:
     """Read one bounded GitHub metadata response through the existing workflow CLI token."""
     result = subprocess.run(
         ["gh", "api", endpoint], check=True, capture_output=True, text=True, timeout=30
@@ -68,12 +69,25 @@ def main() -> int:
         if not runs or runs[0]["status"] != "completed" or runs[0]["conclusion"] != "success":
             raise Rejected(f"exact source commit requires successful {workflow}")
         checked.append({"workflow": workflow, "id": runs[0]["id"], "url": runs[0]["html_url"]})
+    alerts = api(
+        f"repos/{repository}/code-scanning/alerts?state=open&ref=refs/heads/main&per_page=100"
+    )
+    if not isinstance(alerts, list) or alerts:
+        raise Rejected(
+            "open code-scanning findings block release; analysis completion alone is not clearance"
+        )
     output = Path(os.environ["GITHUB_OUTPUT"])
     with output.open("a", encoding="utf-8") as stream:
         stream.write(f"version={policy.version}\ncommit={policy.commit}\n")
     print(
         json.dumps(
-            {"status": "release-gate-passed", "source": policy.commit, "checks": checked}, indent=2
+            {
+                "status": "release-gate-passed",
+                "source": policy.commit,
+                "checks": checked,
+                "open_code_scanning_alerts": 0,
+            },
+            indent=2,
         )
     )
     return 0

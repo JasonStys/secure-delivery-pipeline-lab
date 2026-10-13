@@ -53,7 +53,7 @@ def install(name: str) -> Path:
     if not lock["url"].startswith(prefix):
         raise ValueError("tool source must be the pinned official repository")
     output = ROOT / ".tools"
-    output.mkdir(exist_ok=True)
+    output.mkdir(exist_ok=True, mode=0o700)
     digest = hashlib.sha256()
     total = 0
     with tempfile.TemporaryDirectory(dir=output) as temporary:
@@ -79,7 +79,7 @@ def install(name: str) -> Path:
                 raise ValueError("scanner binary is missing")
             with source, (Path(temporary) / name).open("wb") as target:
                 shutil.copyfileobj(source, target)
-            os.chmod(Path(temporary) / name, 0o755)
+            os.chmod(Path(temporary) / name, 0o700)
             os.replace(Path(temporary) / name, output / name)
     return output / name
 

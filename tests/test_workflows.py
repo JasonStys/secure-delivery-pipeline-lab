@@ -97,7 +97,7 @@ def test_scanner_pins() -> None:
 
 
 @pytest.mark.parametrize(
-    "failure", [None, "repo", "branch", "tag", "sha", "ci", "pending", "missing"]
+    "failure", [None, "repo", "branch", "tag", "sha", "ci", "pending", "missing", "alerts"]
 )
 def test_exact_source_release_gate(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, failure: str | None
@@ -128,7 +128,13 @@ def test_exact_source_release_gate(
     )
     with patch(
         "scripts.gate.api",
-        side_effect=[tag, {"object": obj}, {"workflow_runs": runs}, {"workflow_runs": runs}],
+        side_effect=[
+            tag,
+            {"object": obj},
+            {"workflow_runs": runs},
+            {"workflow_runs": runs},
+            [{"number": 1}] if failure == "alerts" else [],
+        ],
     ):
         if failure:
             with pytest.raises(Rejected):

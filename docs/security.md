@@ -27,6 +27,7 @@ Untrusted boundaries include downloaded manifests/assets, local input JSON, muta
 
 - A trusted maintainer or compromised GitHub/workflow/toolchain can produce malicious signed software. Provenance identifies an origin; it does not prove that software is harmless. Require source review and independent trust selection.
 - GitHub CLI and its authentication/trust roots are externally supplied. Network/verifier outages block new verification/promotion/rollback. They do not activate an unsigned fallback.
+- Completed CodeQL analysis is not by itself a clean security result. The release gate additionally requires zero open code-scanning alerts on main; findings are fixed rather than dismissed automatically.
 - This authored probe's health check is not a sandbox for arbitrary malware. `-I`, a small environment, fixed argv and timeouts reduce accidental interference, not all OS capabilities. Do not generalize the executor to untrusted programs.
 - Local administrator/same-user interference, compromised parent directories, hard links, hostile filesystems, malicious inherited OS tooling and guaranteed power-loss durability are not fully defended. Put disposable state in a trusted user-owned location; this is not a multi-user service.
 - The zipapp SBOM explicitly excludes the externally supplied Python interpreter/OS. The actual container is scanned separately; no scanner proves absence of unknown vulnerabilities.
