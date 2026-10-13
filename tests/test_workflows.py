@@ -1,36 +1,42 @@
 """Workflow privilege, pinning, source gating and storage regressions. Created by Jason Stys."""
 # BEGIN CODE MAP (generated; python scripts/code_map.py)
-# variable: ROOT — line 42
-# definition: test_code_map_self_reference — line 45
-# variable: source — line 47
-# variable: generated — line 48
-# definition: test_sbom_standard_schema — line 52
-# parameter: policy — line 52
-# variable: document — line 60
-# definition: test_workflow_security_contract — line 64
-# variable: path — line 66
-# variable: text — line 67
-# variable: document — line 68
-# variable: job — line 72
-# variable: step — line 73
-# variable: release — line 79
-# variable: path — line 85
-# definition: test_scanner_pins — line 89
-# variable: lock — line 91
-# variable: tool — line 93
-# definition: test_exact_source_release_gate — line 102
-# parameter: failure — line 103
-# parameter: monkeypatch — line 103
-# parameter: tmp_path — line 103
-# variable: obj — line 115
-# variable: tag — line 116
-# variable: runs — line 117
+# variable: ROOT — line 48
+# definition: test_code_map_self_reference — line 51
+# variable: source — line 53
+# variable: generated — line 54
+# definition: test_sbom_standard_schema — line 58
+# parameter: policy — line 58
+# variable: document — line 66
+# definition: test_workflow_security_contract — line 70
+# variable: path — line 72
+# variable: text — line 73
+# variable: document — line 74
+# variable: job — line 78
+# variable: step — line 79
+# variable: release — line 85
+# variable: path — line 91
+# definition: test_sbom_attester_identity_contract — line 95
+# variable: policy — line 100
+# variable: document — line 101
+# variable: serial — line 102
+# variable: field — line 106
+# definition: test_scanner_pins — line 111
+# variable: lock — line 113
+# variable: tool — line 115
+# definition: test_exact_source_release_gate — line 124
+# parameter: failure — line 125
+# parameter: monkeypatch — line 125
+# parameter: tmp_path — line 125
+# variable: obj — line 137
+# variable: tag — line 138
+# variable: runs — line 139
 # END CODE MAP
 
 import json
 import re
 from pathlib import Path
 from unittest.mock import patch
+from uuid import UUID
 
 import pytest
 import yaml
@@ -84,6 +90,22 @@ def test_workflow_security_contract() -> None:
     assert release["jobs"]["release"]["permissions"]["id-token"] == "write"
     for path in ("ci.yml", "codeql.yml"):
         assert "id-token:" not in (ROOT / ".github/workflows" / path).read_text()
+
+
+def test_sbom_attester_identity_contract() -> None:
+    """The pinned attester requires a serial UUID, stable per source and different per identity."""
+    from delivery.build import sbom
+    from delivery.verify import REPOSITORY, TrustPolicy
+
+    policy = TrustPolicy(REPOSITORY, "a" * 40, "1.0.1")
+    document = sbom(policy)
+    serial = document["serialNumber"]
+    assert serial.startswith("urn:uuid:")
+    assert UUID(serial.removeprefix("urn:uuid:")).version == 5
+    assert document == sbom(policy)
+    assert all(document[field] for field in ("bomFormat", "serialNumber", "specVersion"))
+    assert serial != sbom(TrustPolicy(REPOSITORY, "b" * 40, "1.0.1"))["serialNumber"]
+    assert serial != sbom(TrustPolicy(REPOSITORY, "a" * 40, "1.0.2"))["serialNumber"]
 
 
 def test_scanner_pins() -> None:

@@ -29,7 +29,7 @@ This illustrative abbreviated manifest is **not** a valid release. A valid manif
 
 The zipapp contains exactly `__main__.py`, `delivery/__init__.py`, `delivery/io.py`, `delivery/probe.py`, `LICENSE`, `BUILD.json`; regular entries only, <=512 KiB/member and <=1 MiB total expansion. The builder uses fixed timestamps and stored compression. `BUILD.json` is explanatory metadata, not the trust anchor.
 
-The CycloneDX 1.6 SBOM's root application has MIT licensing, VCS identity and no external package dependencies. It explicitly documents external interpreter/OS scope. Validation JSON records actual release-job JUnit counts, branch-inclusive coverage and benchmark measurements; other CI scanner gates are independently checked by workflow run status.
+The CycloneDX 1.6 SBOM's root application has MIT licensing, VCS identity and no external package dependencies. Its `urn:uuid:` serial number is deterministic UUIDv5 from repository/commit/version, satisfying the pinned attester's stricter identity contract without introducing random build bytes. It explicitly documents external interpreter/OS scope. Validation JSON records actual release-job JUnit counts, combined statement/branch coverage and benchmark measurements; other CI scanner gates are independently checked by workflow run status.
 
 ## Trust policy and CLI
 

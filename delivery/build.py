@@ -1,48 +1,48 @@
 """Reproducible allowlisted zipapp, scoped SBOM, and evidence builder by Jason Stys."""
 # BEGIN CODE MAP (generated; python scripts/code_map.py)
-# definition: application_bytes — line 65
-# parameter: policy — line 65
-# parameter: root — line 65
-# variable: files — line 67
-# variable: name — line 69
-# variable: output — line 75
-# variable: archive — line 76
-# variable: data — line 77
-# variable: name — line 77
-# variable: entry — line 78
-# definition: sbom — line 85
-# parameter: policy — line 85
-# variable: component — line 87
-# definition: test_evidence — line 116
-# parameter: benchmark — line 116
-# parameter: coverage — line 116
-# parameter: junit — line 116
-# variable: xml — line 119
-# variable: suites — line 120
-# variable: counts — line 123
-# variable: suite — line 124
-# variable: name — line 125
-# variable: name — line 128
-# variable: percent — line 131
-# variable: performance — line 132
-# definition: build_release — line 148
-# parameter: evidence — line 148
-# parameter: output — line 148
-# parameter: policy — line 148
-# parameter: root — line 148
-# variable: data — line 153
-# variable: assets — line 158
-# variable: content — line 159
-# variable: name — line 159
-# variable: manifest — line 164
-# definition: main — line 178
-# variable: parser — line 180
-# variable: arguments — line 187
-# variable: root — line 188
-# variable: policy — line 189
-# variable: metadata — line 190
-# variable: current — line 191
-# variable: dirty — line 194
+# definition: application_bytes — line 66
+# parameter: policy — line 66
+# parameter: root — line 66
+# variable: files — line 68
+# variable: name — line 70
+# variable: output — line 76
+# variable: archive — line 77
+# variable: data — line 78
+# variable: name — line 78
+# variable: entry — line 79
+# definition: sbom — line 86
+# parameter: policy — line 86
+# variable: component — line 88
+# definition: test_evidence — line 118
+# parameter: benchmark — line 118
+# parameter: coverage — line 118
+# parameter: junit — line 118
+# variable: xml — line 121
+# variable: suites — line 122
+# variable: counts — line 125
+# variable: suite — line 126
+# variable: name — line 127
+# variable: name — line 130
+# variable: percent — line 133
+# variable: performance — line 134
+# definition: build_release — line 150
+# parameter: evidence — line 150
+# parameter: output — line 150
+# parameter: policy — line 150
+# parameter: root — line 150
+# variable: data — line 155
+# variable: assets — line 160
+# variable: content — line 161
+# variable: name — line 161
+# variable: manifest — line 166
+# definition: main — line 180
+# variable: parser — line 182
+# variable: arguments — line 189
+# variable: root — line 190
+# variable: policy — line 191
+# variable: metadata — line 192
+# variable: current — line 193
+# variable: dirty — line 196
 # END CODE MAP
 
 from __future__ import annotations
@@ -57,6 +57,7 @@ import zipfile
 from io import BytesIO
 from pathlib import Path
 from typing import Any
+from uuid import NAMESPACE_URL, uuid5
 
 from delivery.io import Rejected, atomic_write, canonical, load_json, read_bytes
 from delivery.verify import REPOSITORY, TrustPolicy, preflight
@@ -98,6 +99,7 @@ def sbom(policy: TrustPolicy) -> dict[str, Any]:
     return {
         "bomFormat": "CycloneDX",
         "specVersion": "1.6",
+        "serialNumber": f"urn:uuid:{uuid5(NAMESPACE_URL, f'https://github.com/{policy.repository}/tree/{policy.commit}#release-probe-{policy.version}')}",
         "version": 1,
         "metadata": {
             "component": component,

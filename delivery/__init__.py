@@ -3,4 +3,4 @@
 # variable: __version__ — line 6
 # END CODE MAP
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"

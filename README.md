@@ -48,8 +48,8 @@ Install [official GitHub CLI](https://cli.github.com/) and obtain the desired **
 From a reviewed source checkout:
 
 ```text
-gh release download v1.0.0 --repo JasonStys/secure-delivery-pipeline-lab --dir out/download --pattern release.json --pattern release-probe-1.0.0.pyz --pattern sbom.cdx.json --pattern validation.json
-python -m delivery verify --directory out/download --version 1.0.0 --commit FULL_INDEPENDENT_SOURCE_SHA
+gh release download v1.0.1 --repo JasonStys/secure-delivery-pipeline-lab --dir out/download --pattern release.json --pattern release-probe-1.0.1.pyz --pattern sbom.cdx.json --pattern validation.json
+python -m delivery verify --directory out/download --version 1.0.1 --commit FULL_INDEPENDENT_SOURCE_SHA
 ```
 
 The four-file allowlist is intentional. `live-verification.json` is a separate release-job report and is not part of this deployment bundle.
@@ -59,7 +59,7 @@ Do **not** run the downloaded zipapp before verification. A successful result is
 For a disposable local deployment:
 
 ```text
-python -m delivery promote --directory out/download --root lab-state --version 1.0.0 --commit FULL_INDEPENDENT_SOURCE_SHA
+python -m delivery promote --directory out/download --root lab-state --version 1.0.1 --commit FULL_INDEPENDENT_SOURCE_SHA
 ```
 
 Use a new empty directory or a directory already marked by this lab. Existing unrelated data is not overwritten. Promotion runs only this authored, authenticated application's fixed self-test. It does not install a service or change your other apps.
@@ -149,8 +149,9 @@ Every authored Python file has a generated exact-line map of definitions, parame
 | `docs/research.md` | Primary-source design references and pinned tool/image review. |
 | `docs/case-study.md` | Employer-facing problem, implementation decisions and evidence links. |
 | `docs/release-checklist.md` | Customized pre/post-release readiness and rollback triggers. |
-| `docs/reports/validation-1.0.0.md` | Dated measured results, run links, source identity and known limitations. |
-| `docs/releases/v1.0.0.md` | Public release scope and verification instructions. |
+| `docs/reports/validation-1.0.1.md` | Dated measured results, run links, source identity and known limitations. |
+| `docs/releases/v1.0.0.md` | Historical failed candidate; tag preserved without publishing. |
+| `docs/releases/v1.0.1.md` | Corrected public release scope and verification instructions. |
 
 ## What this demonstrates
 

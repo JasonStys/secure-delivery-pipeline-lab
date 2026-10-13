@@ -1,6 +1,6 @@
 [project]
 name = "secure-delivery-pipeline-lab"
-version = "1.0.0"
+version = "1.0.1"
 description = "Verified release provenance, tamper rejection, and atomic lab promotion by Jason Stys"
 requires-python = ">=3.12"
 license = "MIT"
