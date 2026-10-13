@@ -1,0 +1,94 @@
+# Jason Stys: read-only PR/push checks; no release/OIDC permissions or artifact uploads.
+# Functions: quality (four Python/OS lanes), security scanners, Linux container smoke.
+# Variables: matrix.os/python select hosted workers; GH_TOKEN is absent from test jobs.
+name: Validate
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  quality:
+    name: Python ${{ matrix.python }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: ubuntu-latest, python: '3.12'}
+          - {os: ubuntu-latest, python: '3.14'}
+          - {os: windows-latest, python: '3.14'}
+          - {os: macos-latest, python: '3.14'}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install hash-locked development tools
+        run: python -m pip install --require-hashes -r requirements-dev.lock
+      - name: Validate authored code and measured behavior
+        shell: bash
+        run: bash scripts/validate.sh
+      - name: Job evidence without Actions artifact storage
+        if: always()
+        run: python scripts/summary.py
+  security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.14'
+      - run: python -m pip install --require-hashes -r requirements-dev.lock
+      - name: Audit locked dependencies without suppression
+        run: python -m pip_audit -r requirements-dev.lock --disable-pip --no-deps
+      - name: Install hash-pinned official scanner binaries
+        run: |
+          python scripts/tools.py gitleaks
+          python scripts/tools.py trivy
+          python scripts/tools.py actionlint
+      - name: Secrets, configuration and workflow checks
+        run: |
+          .tools/gitleaks git . --redact --no-banner
+          .tools/trivy fs --scanners vuln,misconfig --severity HIGH,CRITICAL --exit-code 1 --skip-dirs .git,.tools,artifacts,out .
+          .tools/actionlint
+      - name: Shell syntax and ShellCheck
+        run: |
+          bash -n scripts/validate.sh
+          shellcheck scripts/validate.sh
+      - name: Security gate summary
+        run: |
+          printf '%s\n' '## Security gates' '' 'Locked dependency audit, history secret scan, HIGH/CRITICAL filesystem/configuration scan, actionlint and ShellCheck passed. No advisory suppressions.' >> "$GITHUB_STEP_SUMMARY"
+  container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Build digest-pinned non-root probe image
+        run: docker build --pull -t delivery-probe:ci .
+      - name: Restricted real container smoke
+        run: |
+          docker run --rm --read-only --network none --cap-drop ALL --security-opt no-new-privileges --pids-limit 32 --memory 128m --cpus 1 delivery-probe:ci --self-test
+          docker run --rm --read-only --network none --cap-drop ALL --security-opt no-new-privileges --pids-limit 32 --memory 128m --cpus 1 delivery-probe:ci
+      - name: Audit actual image operating-system and Python inventory
+        run: |
+          python scripts/tools.py trivy
+          .tools/trivy image --scanners vuln --severity HIGH,CRITICAL --exit-code 1 delivery-probe:ci
+          .tools/trivy image --format cyclonedx --output /tmp/probe-image.cdx.json delivery-probe:ci
+      - name: Container evidence summary
+        run: |
+          printf '%s\n' '## Container gates' '' 'Digest-pinned image built and ran without network, write access, Linux capabilities or elevated privileges. Image HIGH/CRITICAL vulnerability gate passed; SBOM generated on the runner. Docker Desktop on the developer PC was not changed.' >> "$GITHUB_STEP_SUMMARY"

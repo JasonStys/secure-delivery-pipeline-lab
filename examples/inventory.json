@@ -1,0 +1,5 @@
+[
+  {"id":"SENSOR-A1","units":12,"unit_price_usd":"49.95"},
+  {"id":"RELAY-B2","units":30,"unit_price_usd":"8.40"},
+  {"id":"GATEWAY-C3","units":4,"unit_price_usd":"219.00"}
+]

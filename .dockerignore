@@ -1,0 +1,6 @@
+*
+!delivery/
+!delivery/*.py
+!examples/
+!examples/inventory.json
+!LICENSE

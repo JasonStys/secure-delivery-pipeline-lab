@@ -1,0 +1,78 @@
+# Jason Stys: manual tag-only release; green exact-SHA gates before keyless attestation.
+# Functions: read-only gate, rebuild/test, attest assets, live adversarial smoke, draft/publication.
+# Variables: verified version/commit outputs; GH_TOKEN is ephemeral and never shipped.
+name: Verified release
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  gate:
+    if: github.repository == 'JasonStys/secure-delivery-pipeline-lab' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.gate.outputs.version }}
+      commit: ${{ steps.gate.outputs.commit }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Require exact source Validate and CodeQL success
+        id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/gate.py
+  release:
+    needs: gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    env:
+      VERSION: ${{ needs.gate.outputs.version }}
+      SOURCE_COMMIT: ${{ needs.gate.outputs.commit }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ needs.gate.outputs.commit }}
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.14'
+      - run: python -m pip install --require-hashes -r requirements-dev.lock
+      - name: Revalidate and build the exact source
+        run: |
+          bash scripts/validate.sh
+          python -m delivery.build --version "$VERSION" --commit "$SOURCE_COMMIT" --out out/release --junit artifacts/junit.xml --coverage artifacts/coverage.json --benchmark artifacts/benchmark.json
+      - name: Keyless provenance for manifest and all release assets
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-path: 'out/release/*'
+      - name: Actual GitHub verification and adversarial release tests
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/release_smoke.py --directory out/release --commit "$SOURCE_COMMIT" --version "$VERSION" --out artifacts/live-verification.json
+      - name: Attest the actual live-verification report
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-path: artifacts/live-verification.json
+      - name: Bind the application to its scoped CycloneDX SBOM
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-path: 'out/release/release-probe-${{ needs.gate.outputs.version }}.pyz'
+          sbom-path: out/release/sbom.cdx.json
+      - name: Create draft and publish only after cryptographic tests pass
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v$VERSION" --repo "$GITHUB_REPOSITORY" --verify-tag --draft --title "Secure Delivery Pipeline Lab $VERSION" --notes-file "docs/releases/v$VERSION.md" out/release/* artifacts/live-verification.json
+          gh release edit "v$VERSION" --repo "$GITHUB_REPOSITORY" --draft=false
+      - name: Measured release evidence
+        if: always()
+        run: python scripts/summary.py

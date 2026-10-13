@@ -1,0 +1,10 @@
+# Development tools only. The shipped probe has no external Python dependencies.
+pip==26.2.1
+pytest==9.1.1
+pytest-cov==7.1.0
+hypothesis==6.169.0
+ruff==0.17.0
+mypy==2.4.0
+pip-audit==2.10.1
+PyYAML==6.0.3
+cyclonedx-python-lib[json-validation]==11.12.0
