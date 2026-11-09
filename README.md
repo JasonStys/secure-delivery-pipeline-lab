@@ -21,6 +21,7 @@ The application is deliberately modest: a dependency-free inventory CLI using ex
 - **Independent trust policy:** consumers specify repository, exact source SHA, stable tag and signing workflow. Verification checks these identities using GitHub CLI; a manifest's own identity claims are not a trust anchor.
 - **Fail-closed promotion:** copy candidate bytes into an owned staging directory, authenticate those exact bytes, run the fixed health probe, then atomically change the active-slot pointer. Failed verification/health leaves the old pointer unchanged.
 - **Explicit rollback:** reauthenticate a caller-selected previous version and source commit. No implicit downgrade, checksum-only deployment, or production/cloud mutation.
+- **[Verified impact and operational receipts](docs/operations-review.md):** authenticate candidate and current active bytes before a nonexecuting member/asset comparison; atomically commit pointers with the newest20 successful transition receipts and asserted operator/change context.
 - **Live adversarial release checks:** actual GitHub verification rejects changed payloads, rewritten matching manifests, wrong repositories, workflows, source commits and tags before publication.
 
 This is an educational deployment lab, **not a production platform, a malware sandbox, a certification, or a claim of a particular SLSA assurance level**. [Threat model and limitations](docs/security.md).
@@ -109,12 +110,14 @@ Every authored Python file has a generated exact-line map of definitions, parame
 | File | Responsibility |
 |---|---|
 | `delivery/__init__.py` | Authored runtime version; no runtime dependencies. |
-| `delivery/__main__.py` | Explicit trust-policy CLI: preflight, verify, promote, rollback. |
+| `delivery/__main__.py` | Explicit trust-policy CLI: preflight, verify, impact, promote, rollback. |
 | `delivery/io.py` | Bounded regular-file reads, duplicate-safe JSON and atomic replacement. |
 | `delivery/probe.py` | Exact-cent synthetic inventory application and health self-test. |
 | `delivery/verify.py` | Asset/ZIP allowlists, digest checks and exact GitHub signer/source verification. |
 | `delivery/build.py` | Reproducible zipapp, scoped CycloneDX SBOM, real-evidence gate and manifest. |
 | `delivery/deploy.py` | Owned disposable roots, OS locks, immutable slots, health gates and rollback. |
+| `delivery/impact.py` | Full staged authentication of current/candidate bundles, nonexecuting asset/member review and inert exports. |
+| `delivery/receipts.py` | Bounded successful transition history validated and committed atomically with pointers. |
 | `scripts/validate.sh` | Fail-fast Bash quality/test/performance entry point. |
 | `scripts/code_map.py` | Generate/check exact source-header symbol line locations. |
 | `scripts/benchmark.py` | Actual 10,000-record timing/throughput/memory measurements and budgets. |
@@ -126,6 +129,7 @@ Every authored Python file has a generated exact-line map of definitions, parame
 | `tests/test_probe.py` | Schema, money arithmetic, generated inputs and probe CLI regressions. |
 | `tests/test_boundaries.py` | Malformed JSON/files/archives/manifests, tampering and verifier failure paths. |
 | `tests/test_delivery.py` | Byte reproducibility, evidence gates, real zipapp health, pointers and rollback. |
+| `tests/test_operations.py` | Exact active/candidate verification, no-execution review, bounded receipts, legacy migration and atomic failure preservation. |
 | `tests/test_workflows.py` | Permission/action-pin/storage contracts and exact-source release-gate scenarios. |
 | `examples/inventory.json` | Three fictional stock records; no customer or employer data. |
 | `Dockerfile` | Digest-pinned, dependency-free, non-root container demonstration. |
@@ -147,6 +151,8 @@ Every authored Python file has a generated exact-line map of definitions, parame
 | `docs/security.md` | Threat model, mitigations, residual risks and educational control mapping. |
 | `docs/contracts.md` | Inventory, manifests, trust policy, zipapp, state and exit-code contracts. |
 | `docs/runbook.md` | User/operator workflows, rollback, outages and safe recovery. |
+| `docs/operations-review.md` | Authenticated impact workflow, schema-2 successful receipts, migration and identity limits. |
+| `docs/reports/operations-2026-11-09.md` | Local 114-test workflow evidence, atomic failure/retention results and CI-discovered dependency repair. |
 | `docs/test-plan.md` | Risk-based unit/property/integration/live-release strategy and honest scope. |
 | `docs/research.md` | Primary-source design references and pinned tool/image review. |
 | `docs/case-study.md` | Employer-facing problem, implementation decisions and evidence links. |

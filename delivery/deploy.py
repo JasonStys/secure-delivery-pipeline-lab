@@ -1,44 +1,49 @@
 """Authenticated immutable lab slots and atomic promotion/rollback. Created by Jason Stys."""
 # BEGIN CODE MAP (generated; python scripts/code_map.py)
-# variable: MARKER — line 60
-# definition: owned_root — line 63
-# parameter: root — line 63
-# variable: allowed — line 72
-# variable: path — line 75
-# variable: slots — line 78
-# definition: deployment_lock — line 84
-# parameter: root — line 84
-# variable: stream — line 86
-# definition: state — line 116
-# parameter: root — line 116
-# variable: path — line 118
-# variable: value — line 121
-# variable: name — line 129
-# variable: slot — line 130
-# definition: health_check — line 139
-# parameter: path — line 139
-# variable: environment — line 141
-# variable: name — line 143
-# variable: value — line 143
-# variable: result — line 147
-# definition: promote — line 161
-# parameter: directory — line 162
-# parameter: expected_previous — line 162
-# parameter: policy — line 162
-# parameter: root — line 162
-# variable: root — line 166
-# variable: previous — line 168
-# variable: slot_name — line 171
-# variable: slot — line 172
-# variable: temporary — line 173
-# variable: staged — line 174
-# variable: name — line 176
-# variable: result — line 188
-# definition: rollback — line 193
-# parameter: policy — line 193
-# parameter: root — line 193
-# variable: root — line 195
-# variable: expected — line 196
+# variable: MARKER — line 65
+# definition: owned_root — line 68
+# parameter: initialize — line 68
+# parameter: root — line 68
+# variable: allowed — line 79
+# variable: path — line 82
+# variable: slots — line 85
+# definition: deployment_lock — line 91
+# parameter: root — line 91
+# variable: stream — line 93
+# definition: state — line 123
+# parameter: root — line 123
+# variable: path — line 125
+# variable: value — line 128
+# variable: name — line 141
+# variable: slot — line 142
+# definition: health_check — line 150
+# parameter: path — line 150
+# variable: environment — line 152
+# variable: name — line 154
+# variable: value — line 154
+# variable: result — line 158
+# definition: promote — line 172
+# parameter: directory — line 173
+# parameter: root — line 174
+# parameter: policy — line 175
+# parameter: expected_previous — line 176
+# parameter: operator — line 178
+# parameter: change_ref — line 179
+# variable: root — line 185
+# variable: previous — line 187
+# variable: slot_name — line 190
+# variable: slot — line 191
+# variable: temporary — line 192
+# variable: staged — line 193
+# variable: name — line 195
+# variable: result — line 207
+# definition: rollback — line 220
+# parameter: root — line 221
+# parameter: policy — line 222
+# parameter: operator — line 224
+# parameter: change_ref — line 225
+# variable: root — line 228
+# variable: expected — line 229
 # END CODE MAP
 
 from __future__ import annotations
@@ -46,7 +51,6 @@ from __future__ import annotations
 import contextlib
 import json
 import os
-import re
 import subprocess
 import sys
 import tempfile
@@ -55,15 +59,18 @@ from pathlib import Path
 from typing import Any
 
 from delivery.io import Rejected, atomic_write, canonical, load_json, read_bytes
+from delivery.receipts import committed, context, valid_slot, validate
 from delivery.verify import TrustPolicy, preflight, verify_release
 
 MARKER = {"schema": 1, "purpose": "secure-delivery-pipeline-lab-disposable-deployment"}
 
 
-def owned_root(root: Path) -> Path:
+def owned_root(root: Path, initialize: bool = True) -> Path:
     """Initialize only a new/empty directory, or recognize this lab's exact existing marker."""
     if root.is_symlink() or root.is_junction() or root.resolve() == Path(root.anchor):
         raise Rejected("invalid deployment root")
+    if not initialize and (not root.is_dir() or not (root / "slots").is_dir()):
+        raise Rejected("existing lab deployment required")
     root.mkdir(parents=True, exist_ok=True, mode=0o700)
     if not any(root.iterdir()):
         atomic_write(root / "lab.json", canonical(MARKER))
@@ -118,21 +125,25 @@ def state(root: Path) -> dict[str, Any]:
     path = root / "active.json"
     if not path.exists():
         return {"schema": 1, "active": None, "previous": None}
-    value = load_json(path, 4096)
+    value = load_json(path, 65536)
     if (
         not isinstance(value, dict)
-        or set(value) != {"schema", "active", "previous"}
-        or type(value["schema"]) is not int
-        or value["schema"] != 1
+        or type(value.get("schema")) is not int
+        or value["schema"] not in (1, 2)
+        or set(value)
+        != (
+            {"schema", "active", "previous", "receipts"}
+            if value["schema"] == 2
+            else {"schema", "active", "previous"}
+        )
     ):
         raise Rejected("invalid deployment state")
     for name in ("active", "previous"):
         slot = value[name]
-        if slot is not None and (
-            not isinstance(slot, str)
-            or not re.fullmatch(r"v[0-9]{1,6}\.[0-9]{1,6}\.[0-9]{1,6}-[a-f0-9]{40}", slot)
-        ):
+        if not valid_slot(slot):
             raise Rejected("invalid deployment slot")
+    if value["schema"] == 2:
+        validate(value["receipts"], value["active"], value["previous"])
     return value
 
 
@@ -159,10 +170,18 @@ def health_check(path: Path) -> None:
 
 
 def promote(
-    directory: Path, root: Path, policy: TrustPolicy, expected_previous: str | None = None
+    directory: Path,
+    root: Path,
+    policy: TrustPolicy,
+    expected_previous: str | None = None,
+    *,
+    operator: str = "unspecified-local-operator",
+    change_ref: str = "unspecified-change",
 ) -> dict[str, Any]:
     """Stage exact asset bytes, authenticate and smoke-test them, then swap only the pointer."""
     preflight(directory, policy)
+    context(operator)
+    context(change_ref)
     root = owned_root(root)
     with deployment_lock(root):
         previous = state(root)
@@ -185,15 +204,36 @@ def promote(
                 os.replace(staged, slot)
             if previous["active"] == slot_name:
                 return previous
-            result = {"schema": 1, "active": slot_name, "previous": previous["active"]}
+            result = committed(
+                previous,
+                slot_name,
+                policy,
+                slot,
+                "rollback" if expected_previous is not None else "promote",
+                operator,
+                change_ref,
+            )
             atomic_write(root / "active.json", canonical(result))
             return result
 
 
-def rollback(root: Path, policy: TrustPolicy) -> dict[str, Any]:
+def rollback(
+    root: Path,
+    policy: TrustPolicy,
+    *,
+    operator: str = "unspecified-local-operator",
+    change_ref: str = "unspecified-change",
+) -> dict[str, Any]:
     """Reauthenticate an explicitly trusted previous release; never just trust the state file."""
     root = owned_root(root)
     expected = f"v{policy.version}-{policy.commit}"
     if state(root)["previous"] != expected:
         raise Rejected("explicit rollback target is not the previous release")
-    return promote(root / "slots" / expected, root, policy, expected_previous=expected)
+    return promote(
+        root / "slots" / expected,
+        root,
+        policy,
+        expected_previous=expected,
+        operator=operator,
+        change_ref=change_ref,
+    )
