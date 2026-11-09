@@ -41,6 +41,6 @@ Exit 0: command's explicitly labeled success. Exit 2: rejection/input/operationa
 
 ## Deployment state
 
-New/empty user-selected root gets `lab.json`, `.lock`, `slots/`, and later `active.json`. Existing nonempty roots without the exact marker are refused. Slot names are `vVERSION-FULLSHA`. State schema has `schema:1`, `active`, `previous`; pointers are null or validated slot names. No pointer may select an arbitrary file or supply repository/commit trust by itself.
+New/empty user-selected root gets `lab.json`, `.lock`, `slots/`, and later `active.json`. Existing nonempty roots without the exact marker are refused. Slot names are `vVERSION-FULLSHA`. Legacy state schema1 has `active` and `previous`; a new successful transition writes schema2 with those pointers and the newest20 committed receipts. Pointers are null or validated slot names. No pointer or receipt may select an arbitrary file or supply repository/commit trust by itself. [Receipt contracts and migration](operations-review.md) describe exact fields, bounded retention and asserted identity limits.
 
 Slots remain immutable for ordinary tool operations. An existing matching slot is reverified. Active pointer changes only after staged authentication and health pass. Previous slot data is preserved; no automatic pruning or destructive cleanup is provided.
