@@ -164,9 +164,21 @@ Every authored Python file has a generated exact-line map of definitions, parame
 | `docs/releases/v1.0.1.md` | Corrected public release scope and verification instructions. |
 | `docs/releases/v1.1.0.md` | Refreshed signed example, independent baseline trust and expanded actual release acceptance. |
 | `docs/reports/release-refresh-2026-11-09.md` | New source validation, release-gate identity controls and honest live-publication limits. |
+| `docs/handbook.md` | Organized usage/design/security/test documentation entry point. |
+| `docs/reports/project-guide.docx` | Reviewed Word project guide at the recorded source baseline. |
+| `docs/reports/validation-review.docx` | Reviewed Word test evidence, exact baseline and limitations. |
+| `docs/reports/validation-evidence.xlsx` | Filterable workflow/test-source evidence Tables and outcome formulas. |
+| `docs/reports/publications.json` | Publication byte identities, visual review scope and immutable source metadata. |
+| `docs/reports/documentation-refresh-2026-11-09.md` | Completed edition review, package checks and separate integration-CI scope. |
 
 ## What this demonstrates
 
 DevSecOps delivery engineering, least-privilege workflow design, supply-chain verification, security regression testing, reproducible packaging, Linux containers, cross-platform Python/Bash automation, operational recovery and clear engineering evidence.
 
 Future extensions could add an approved hosted deployment or a reusable isolated builder. They are not silently implied by this lab and would need their own threat model and tests.
+
+## Documentation editions
+
+Start with the [organized handbook](docs/handbook.md) for current usage, design, security and test guidance. Reviewed downloadable editions: [project-guide.docx](docs/reports/project-guide.docx) · [validation-review.docx](docs/reports/validation-review.docx) · [validation-evidence.xlsx](docs/reports/validation-evidence.xlsx).
+
+[Publication identities and source scope](docs/reports/publications.json) · [Documentation validation record](docs/reports/documentation-refresh-2026-11-09.md). Historical results retain their own tested revision and date.
