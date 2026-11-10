@@ -9,13 +9,14 @@ Author: Jason Stys. Date: 2026-10-13. Target: public educational release and dis
 - Confirm current Actions artifact bytes and available billing quota; warn about full storage. No cleanup, retention or billing mutation without fresh approval.
 - Require exact source commit's Validate and CodeQL runs to succeed, including real three-OS/container/security checks.
 - Confirm runtime metadata/tag/release-note versions agree and only synthetic public-safe files are packaged.
-- Confirm documented rollback behavior and failure evidence; first public version has no older signed public predecessor.
+- Confirm documented rollback behavior and failure evidence against an independently selected signed baseline. The first public version had no signed predecessor; 1.1.0 deliberately verifies the retained 1.0.1 source identity.
 
 ## Release
 
 - Create a new lightweight tag at the exact green main commit and manually dispatch the tag's reviewed workflow.
 - Rebuild/retest; inspect scoped SBOM/evidence; create keyless attestations.
 - Require live valid-provenance acceptance and every wrong-identity/tamper case to reject.
+- Require actual installed-slot inventory/invalid-input controls, authenticated baseline/current impact with pointer bytes unchanged, manifest-bound asserted receipts, idempotent retry and explicit separately trusted baseline rollback.
 - Publish only after those gates; never manually bypass a failed gate or rewrite a published tag.
 
 ## After release
