@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "project": "secure-delivery-pipeline-lab",
+  "author": "Jason Stys",
+  "editionDate": "2026-11-09",
+  "sourceBaseline": "e37b189fa604bb0d6951e4a926d20ed9606298a1",
+  "sourceUrl": "https://github.com/JasonStys/secure-delivery-pipeline-lab/tree/e37b189fa604bb0d6951e4a926d20ed9606298a1",
+  "functionalEvidenceBaseline": "e37b189fa604bb0d6951e4a926d20ed9606298a1",
+  "evidenceObservedAt": "2026-11-10T05:25:40.628667+00:00",
+  "workflowEvidence": [
+    {
+      "conclusion": "success",
+      "databaseId": 42746536402,
+      "event": "push",
+      "headSha": "e37b189fa604bb0d6951e4a926d20ed9606298a1",
+      "name": "Validate",
+      "status": "completed",
+      "url": "https://github.com/JasonStys/secure-delivery-pipeline-lab/actions/runs/42746536402"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 42746536395,
+      "event": "push",
+      "headSha": "e37b189fa604bb0d6951e4a926d20ed9606298a1",
+      "name": "CodeQL",
+      "status": "completed",
+      "url": "https://github.com/JasonStys/secure-delivery-pipeline-lab/actions/runs/42746536395"
+    }
+  ],
+  "summary": "Review authenticated candidate/active changes and retain atomic deployment receipts. The 1.1.0 signed inventory-probe example adds exact-source release gates and a real 19-case verification, promotion, invalid-input and separately trusted rollback journey.",
+  "rationale": "Connects cryptographic provenance to an exercised change-and-recovery workflow while keeping the small downloadable example distinct from its trusted source-side manager.",
+  "limitations": [
+    "The dependency-free inventory probe is a bounded Python zip application; the reviewed verification and promotion manager is separate source, not a desktop installer or production deployment service.",
+    "Impact hashes establish changed bytes, not compatibility or a complete security review. Local receipt aliases are operator assertions, not authenticated human identity or signed audit records.",
+    "Verification requires the official GitHub CLI, independently selected source/version and actual attestation checks; checksum or preflight success alone is insufficient.",
+    "The synthetic release exercise does not establish production readiness, operational availability or operating-system code signing."
+  ],
+  "documents": [
+    {
+      "filename": "project-guide.docx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "bytes": 44463,
+      "sha256": "66032e1438ae4e3fc92d3001d21aca2d4eba11b40a62820b0a6fef14c9a8d160",
+      "sourceBaseline": "e37b189fa604bb0d6951e4a926d20ed9606298a1",
+      "visualReview": {
+        "approved": true,
+        "method": "Every rendered page individually viewed at readable original resolution",
+        "pageCount": 5,
+        "renderedPageSha256": {
+          "page-1.png": "656d0930cd2ba40aaca60ffa7719b9416fefae1cd402d6243dc1516f455c0b89",
+          "page-2.png": "4dbb2f375be08bdd69c2e161dfa4955a95a112aceabec2a124bb82ab8b25bcc2",
+          "page-3.png": "1b2a5048e6932de09b2d4984cf12cc40a7ef7eb37f9c2d82df2d5750ba3b9cbb",
+          "page-4.png": "c3983a5bf122bdc4c80502d4086c8fb8ca5969ea538bf56e3e2cec3996dd4dee",
+          "page-5.png": "c20262b25f1d84a5f44acfd348365c6ec1d0ea7a71793f1855a4accdcb49dbce"
+        }
+      }
+    },
+    {
+      "filename": "validation-review.docx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "bytes": 44289,
+      "sha256": "4e32b72e73ecf2724ba462b6ffb70544349065d02de0e9dae1b52f3d17fe9c9b",
+      "sourceBaseline": "e37b189fa604bb0d6951e4a926d20ed9606298a1",
+      "visualReview": {
+        "approved": true,
+        "method": "Every rendered page individually viewed at readable original resolution",
+        "pageCount": 5,
+        "renderedPageSha256": {
+          "page-1.png": "386ee91bad6d1c24f3a4011f020bfa209884d642fefdd794c3c3401f59ffc650",
+          "page-2.png": "7397181cc8bc1a87b37edb3d7995ca2455a46be72e83ae83a56c5d9e6818676a",
+          "page-3.png": "f6bd0ad506c6b5fa0b88713e7817bcd3e24f9d2edf061895aa8dc9f8438b1bc6",
+          "page-4.png": "96541ed5257ceb507427308b76795d536d1f455bde8e89208aca110e37afa01d",
+          "page-5.png": "51ccd200b5387e58f68084f50656abb2f4c9e0d1cf698d2f7833efc8a0f611ea"
+        }
+      }
+    },
+    {
+      "filename": "validation-evidence.xlsx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "bytes": 7266,
+      "sha256": "59cad1ccb78cd07be2a4c2857bf4d8ef451eaf6920d8048aa4241c90c5223cd6",
+      "sourceBaseline": "e37b189fa604bb0d6951e4a926d20ed9606298a1",
+      "visualReview": {
+        "approved": true,
+        "tabsReviewed": [
+          "Workflow evidence",
+          "Test sources"
+        ],
+        "previewSha256": {
+          "workflow-evidence.png": "3b2528f808849cde6426546dd926eabf4d1b6345fc9b08bcc5f46e6099c2be47",
+          "test-sources.png": "8292b7cf3e96abfc45d95d3e025ae27536c2e1fb4f3011ebceaf5ac6f054864c"
+        },
+        "tables": [
+          {
+            "name": "WorkflowEvidence",
+            "range": "A7:D9",
+            "autoFilter": true
+          },
+          {
+            "name": "TestSources",
+            "range": "A7:C13",
+            "autoFilter": true
+          }
+        ],
+        "formulaCount": 4,
+        "failureSensitivityReceiptPassed": true,
+        "formulaErrors": 0
+      }
+    }
+  ],
+  "scope": "Reviewed documentation editions of the cited source. Checksums identify bytes, not authorship. Historical measurements retain their own dates; integration CI must be checked separately."
+}

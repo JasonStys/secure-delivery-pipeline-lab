@@ -1,3 +1,5 @@
 * text=auto eol=lf
 *.pyz binary
 *.png binary
+*.docx binary
+*.xlsx binary
