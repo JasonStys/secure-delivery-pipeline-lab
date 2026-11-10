@@ -29,38 +29,38 @@
 # parameter: policy — line 161
 # variable: results — line 165
 # variable: temporary — line 168
-# variable: root — line 169
-# variable: lab — line 170
-# variable: baseline_directory — line 172
-# variable: baseline_policy — line 172
-# variable: prior — line 174
-# variable: original_pointer — line 181
-# variable: impact — line 182
-# variable: row — line 191
-# variable: deployed — line 203
-# variable: receipt — line 212
-# variable: committed_pointer — line 223
-# variable: retried — line 224
-# variable: deployed — line 235
-# variable: committed_pointer — line 247
-# variable: tampered — line 260
-# variable: payload — line 262
-# variable: manifest — line 267
-# variable: asset — line 268
-# variable: wrong — line 281
-# variable: name — line 297
-# variable: unexpected — line 297
-# parameter: candidate — line 301
-# variable: item — line 311
-# definition: main — line 320
-# variable: parser — line 322
-# variable: arguments — line 330
-# variable: baseline_fields — line 331
-# variable: baseline — line 340
-# variable: report — line 348
-# variable: content — line 353
-# variable: summary — line 355
-# variable: stream — line 356
+# variable: root — line 171
+# variable: lab — line 172
+# variable: baseline_directory — line 174
+# variable: baseline_policy — line 174
+# variable: prior — line 176
+# variable: original_pointer — line 183
+# variable: impact — line 184
+# variable: row — line 193
+# variable: deployed — line 205
+# variable: receipt — line 214
+# variable: committed_pointer — line 225
+# variable: retried — line 226
+# variable: deployed — line 237
+# variable: committed_pointer — line 249
+# variable: tampered — line 262
+# variable: payload — line 264
+# variable: manifest — line 269
+# variable: asset — line 270
+# variable: wrong — line 283
+# variable: name — line 299
+# variable: unexpected — line 299
+# parameter: candidate — line 303
+# variable: item — line 313
+# definition: main — line 322
+# variable: parser — line 324
+# variable: arguments — line 332
+# variable: baseline_fields — line 333
+# variable: baseline — line 342
+# variable: report — line 350
+# variable: content — line 355
+# variable: summary — line 357
+# variable: stream — line 358
 # END CODE MAP
 
 from __future__ import annotations
@@ -166,7 +166,9 @@ def exercise(
         {"case": "authentic manifest and every asset", "passed": True}
     ]
     with tempfile.TemporaryDirectory(prefix="delivery-live-smoke-") as temporary:
-        root = Path(temporary)
+        # Canonicalize only this newly created owned root; macOS aliases /var to /private/var.
+        # The public export boundary continues to reject arbitrary caller-supplied linked paths.
+        root = Path(temporary).resolve(strict=True)
         lab = root / "lab"
         if baseline:
             baseline_directory, baseline_policy = baseline
