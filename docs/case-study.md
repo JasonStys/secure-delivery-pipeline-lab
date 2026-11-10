@@ -14,7 +14,7 @@ Copy into owned staging before verification, run a real fixed health probe only 
 
 ## Evidence
 
-[Dated validation report](reports/validation-1.0.1.md) distinguishes local tests, real hosted OS/container jobs and actual signature rejection checks. [Actions](https://github.com/JasonStys/secure-delivery-pipeline-lab/actions) shows runs, including any failed attempts. [Releases](https://github.com/JasonStys/secure-delivery-pipeline-lab/releases) contains application, SBOM and public-safe evidence.
+[Dated 1.0.1 validation](reports/validation-1.0.1.md) distinguishes that older release's local tests, real hosted OS/container jobs and actual signature rejection checks. The [1.1.0 source refresh](reports/release-refresh-2026-11-09.md) adds exact returned-run identity checks and end-to-end impact/receipt/rollback acceptance. [Actions](https://github.com/JasonStys/secure-delivery-pipeline-lab/actions) shows runs, including failed attempts. [Releases](https://github.com/JasonStys/secure-delivery-pipeline-lab/releases) contains the deliberately small inventory application, SBOM and public-safe evidence; the trusted management CLI remains reviewed source.
 
 ## Engineering judgment
 

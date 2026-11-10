@@ -1,24 +1,32 @@
 """Trusted tag/exact-SHA release gate using read-only GitHub metadata. Jason Stys."""
 # BEGIN CODE MAP (generated; python scripts/code_map.py)
-# definition: api — line 38
-# parameter: endpoint — line 38
-# variable: result — line 40
-# definition: main — line 48
-# variable: repository — line 50
-# variable: reference — line 51
-# variable: commit — line 52
-# variable: version — line 55
-# variable: policy — line 56
-# variable: tag — line 57
-# variable: branch — line 58
-# variable: checked — line 63
-# variable: workflow — line 64
-# variable: response — line 65
-# parameter: item — line 68
-# variable: runs — line 68
-# variable: alerts — line 72
-# variable: output — line 79
-# variable: stream — line 80
+# definition: api — line 46
+# parameter: endpoint — line 46
+# variable: result — line 48
+# definition: successful_run — line 60
+# parameter: commit — line 61
+# parameter: repository — line 61
+# parameter: response — line 61
+# parameter: workflow — line 61
+# variable: runs — line 66
+# variable: ids — line 69
+# variable: run — line 70
+# parameter: run — line 93
+# variable: latest — line 93
+# definition: main — line 99
+# variable: repository — line 101
+# variable: reference — line 102
+# variable: commit — line 103
+# variable: version — line 106
+# variable: policy — line 107
+# variable: tag — line 108
+# variable: branch — line 109
+# variable: checked — line 114
+# variable: workflow — line 115
+# variable: response — line 116
+# variable: alerts — line 120
+# variable: output — line 127
+# variable: stream — line 128
 # END CODE MAP
 
 from __future__ import annotations
@@ -38,11 +46,54 @@ from delivery.verify import REPOSITORY, TrustPolicy
 def api(endpoint: str) -> dict[str, object] | list[object]:
     """Read one bounded GitHub metadata response through the existing workflow CLI token."""
     result = subprocess.run(
-        ["gh", "api", endpoint], check=True, capture_output=True, text=True, timeout=30
+        ["gh", "api", "--method", "GET", endpoint],
+        check=True,
+        capture_output=True,
+        text=True,
+        timeout=30,
     )
     if len(result.stdout) > 2 * 1024 * 1024:
         raise Rejected("metadata response exceeds limit")
     return json.loads(result.stdout)
+
+
+def successful_run(
+    response: object, repository: str, commit: str, workflow: str
+) -> dict[str, object]:
+    """Require returned run identities as well as query filters; never fall back past a new failure."""
+    if not isinstance(response, dict) or not isinstance(response.get("workflow_runs"), list):
+        raise Rejected("workflow run metadata is malformed")
+    runs = response["workflow_runs"]
+    if not runs:
+        raise Rejected(f"exact source commit requires successful {workflow}")
+    ids: set[int] = set()
+    for run in runs:
+        if (
+            not isinstance(run, dict)
+            or type(run.get("id")) is not int
+            or not 1 <= run["id"] <= 2**63 - 1
+        ):
+            raise Rejected("workflow run identity is malformed")
+        if run["id"] in ids:
+            raise Rejected("duplicate workflow run identity")
+        ids.add(run["id"])
+        if (
+            run.get("head_sha") != commit
+            or run.get("head_branch") != "main"
+            or run.get("event") != "push"
+            or run.get("path")
+            not in {
+                f".github/workflows/{workflow}",
+                f".github/workflows/{workflow}@main",
+                f".github/workflows/{workflow}@refs/heads/main",
+            }
+            or run.get("html_url") != f"https://github.com/{repository}/actions/runs/{run['id']}"
+        ):
+            raise Rejected("workflow run does not match the independent main/source identity")
+    latest = max(runs, key=lambda run: run["id"])
+    if latest.get("status") != "completed" or latest.get("conclusion") != "success":
+        raise Rejected(f"exact source commit requires successful {workflow}")
+    return {"workflow": workflow, "id": latest["id"], "url": latest["html_url"]}
 
 
 def main() -> int:
@@ -63,12 +114,9 @@ def main() -> int:
     checked = []
     for workflow in ("ci.yml", "codeql.yml"):
         response = api(
-            f"repos/{repository}/actions/workflows/{workflow}/runs?head_sha={commit}&event=push&per_page=100"
+            f"repos/{repository}/actions/workflows/{workflow}/runs?head_sha={commit}&branch=main&event=push&per_page=100"
         )
-        runs = sorted(response["workflow_runs"], key=lambda item: item["id"], reverse=True)
-        if not runs or runs[0]["status"] != "completed" or runs[0]["conclusion"] != "success":
-            raise Rejected(f"exact source commit requires successful {workflow}")
-        checked.append({"workflow": workflow, "id": runs[0]["id"], "url": runs[0]["html_url"]})
+        checked.append(successful_run(response, repository, commit, workflow))
     alerts = api(
         f"repos/{repository}/code-scanning/alerts?state=open&ref=refs/heads/main&per_page=100"
     )

@@ -18,7 +18,7 @@ python -m delivery rollback --root lab-state --version PREVIOUS_VERSION --commit
 
 The requested target must match `previous`, then its staged bytes are freshly authenticated and health-checked. A rollback intentionally moves back to that explicitly selected identity; the former active slot becomes previous. If verification is offline, corrupted or the target changed concurrently, keep the current release and investigate. No forced or unauthenticated rollback is provided.
 
-The first public release has no older public version to downgrade to. Unit integration tests exercise two distinct authored fixture identities and real payload execution with only the external signature service mocked; live release tests authenticate real published identity separately. Do not mislabel those fixtures as actual signed previous releases.
+The initial 1.0.1 public release had no signed predecessor. The 1.1.0 release workflow additionally requires the retained 1.0.1 assets under their independently selected source `6e6dc95ce47d4f7dfdf019ccd84db8bdd83f8828`, then performs real candidate promotion and explicit rollback. Local unit integration tests still use authored fixture identities and real payload execution with only the external signature service mocked; those fixtures are not actual signed previous releases. Never infer the active baseline's trust policy from an untrusted pointer or candidate manifest.
 
 ## Maintainer release
 

@@ -7,9 +7,11 @@ Created by **Jason Stys** — [GitHub](https://github.com/JasonStys) · [LinkedI
 
 A working DevSecOps reference that builds a small application, gates its release on tests and security checks, creates keyless GitHub provenance, and rejects altered or incorrectly signed downloads before lab deployment.
 
-[Download verified release v1.0.1](https://github.com/JasonStys/secure-delivery-pipeline-lab/releases/tag/v1.0.1) · [Measured validation and security evidence](docs/reports/validation-1.0.1.md). Published-source checks: 95 tests on all four OS/Python lanes, 91.58% combined statement/branch coverage, nine live cryptographic scenarios on hosted Linux and independently on Windows. Follow the verification instructions below before executing a downloaded package.
+[Release 1.1.0 assets and checks](https://github.com/JasonStys/secure-delivery-pipeline-lab/releases/tag/v1.1.0) · [Current source validation](docs/reports/release-refresh-2026-11-09.md). The refreshed workflow authenticates the retained 1.0.1 baseline, reviews the new candidate, exercises real staged inventory/invalid-input behavior, verifies asserted receipts and retry, and explicitly rolls back. Publication requires every live cryptographic case to pass. [Earlier 1.0.1 measured evidence](docs/reports/validation-1.0.1.md) describes that older source, not these changes.
 
 The application is deliberately modest: a dependency-free inventory CLI using exact cents. The portfolio evidence is the **delivery system**, its trust boundaries, and its measured adversarial tests—not a collection of scanner screenshots.
+
+The downloadable zipapp contains only the six-member inventory probe. Verification, impact review and deployment management run from this repository's trusted reviewed source. There is no desktop installer or background service, and local receipt aliases are not signed attestations or authenticated human identities.
 
 ## What works
 
@@ -51,8 +53,8 @@ Install [official GitHub CLI](https://cli.github.com/) and obtain the desired **
 From a reviewed source checkout:
 
 ```text
-gh release download v1.0.1 --repo JasonStys/secure-delivery-pipeline-lab --dir out/download --pattern release.json --pattern release-probe-1.0.1.pyz --pattern sbom.cdx.json --pattern validation.json
-python -m delivery verify --directory out/download --version 1.0.1 --commit FULL_INDEPENDENT_SOURCE_SHA
+gh release download v1.1.0 --repo JasonStys/secure-delivery-pipeline-lab --dir out/download --pattern release.json --pattern release-probe-1.1.0.pyz --pattern sbom.cdx.json --pattern validation.json
+python -m delivery verify --directory out/download --version 1.1.0 --commit FULL_INDEPENDENT_SOURCE_SHA
 ```
 
 The four-file allowlist is intentional. `live-verification.json` is a separate release-job report and is not part of this deployment bundle.
@@ -62,7 +64,7 @@ Do **not** run the downloaded zipapp before verification. A successful result is
 For a disposable local deployment:
 
 ```text
-python -m delivery promote --directory out/download --root lab-state --version 1.0.1 --commit FULL_INDEPENDENT_SOURCE_SHA
+python -m delivery promote --directory out/download --root lab-state --version 1.1.0 --commit FULL_INDEPENDENT_SOURCE_SHA
 ```
 
 Use a new empty directory or a directory already marked by this lab. Existing unrelated data is not overwritten. Promotion runs only this authored, authenticated application's fixed self-test. It does not install a service or change your other apps.
@@ -160,6 +162,8 @@ Every authored Python file has a generated exact-line map of definitions, parame
 | `docs/reports/validation-1.0.1.md` | Dated measured results, run links, source identity and known limitations. |
 | `docs/releases/v1.0.0.md` | Historical failed candidate; tag preserved without publishing. |
 | `docs/releases/v1.0.1.md` | Corrected public release scope and verification instructions. |
+| `docs/releases/v1.1.0.md` | Refreshed signed example, independent baseline trust and expanded actual release acceptance. |
+| `docs/reports/release-refresh-2026-11-09.md` | New source validation, release-gate identity controls and honest live-publication limits. |
 
 ## What this demonstrates
 

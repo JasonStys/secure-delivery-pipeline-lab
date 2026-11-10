@@ -60,7 +60,9 @@ jobs:
       - name: Actual GitHub verification and adversarial release tests
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python scripts/release_smoke.py --directory out/release --commit "$SOURCE_COMMIT" --version "$VERSION" --out artifacts/live-verification.json
+        run: |
+          gh release download v1.0.1 --repo "$GITHUB_REPOSITORY" --dir out/baseline-release --pattern release.json --pattern release-probe-1.0.1.pyz --pattern sbom.cdx.json --pattern validation.json
+          python scripts/release_smoke.py --directory out/release --commit "$SOURCE_COMMIT" --version "$VERSION" --baseline-directory out/baseline-release --baseline-commit 6e6dc95ce47d4f7dfdf019ccd84db8bdd83f8828 --baseline-version 1.0.1 --out artifacts/live-verification.json
       - name: Attest the actual live-verification report
         uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
         with:
