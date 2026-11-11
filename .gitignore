@@ -17,3 +17,8 @@ dist/
 *.pem
 *.key
 *.p12
+
+# Native candidate/build outputs; private profiles are outside the source tree.
+out/
+release/
+*.spec

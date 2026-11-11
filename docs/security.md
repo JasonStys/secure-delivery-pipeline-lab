@@ -42,3 +42,7 @@ NIST SSDF 1.1 PS.1/PS.2: source protection/provenance and release integrity. PW.
 ## Review outcome
 
 The implementation separates integrity-only checks from authentication, uses existing cryptographic verification, never constructs shell commands from manifest data, and retains old deployment state on gate failure. Function and variable locations are indexed in source headers. The review strengthened release gating to require zero open CodeQL findings and owner-only scanner binaries. Historical 1.0.1 hosted platform/container/security, actual cryptographic rejection and public-download results are recorded in its [dated validation report](reports/validation-1.0.1.md). The [1.1.0 source refresh report](reports/release-refresh-2026-11-09.md) distinguishes new local checks from the separate genuine hosted publication gates. This is an implementation review, not an independent security audit.
+
+## Native offline workbench boundary
+
+Use authorized local inputs and an OS-protected dedicated profile. Reports and selected paths remain sensitive plaintext for one trusted OS owner. Fixed database/marker/lock/sidecar admission rejects existing aliases, hardlinks and nonregular files before initialization; ordinary recovery data is preserved. Static admission cannot isolate malicious same-user processes. The offline GUI does not authenticate provenance or execute incoming applications. Original authenticated CLI controls are separate. [Complete native trust and lifecycle limits](native-application.md).

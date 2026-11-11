@@ -27,3 +27,7 @@ No production cloud availability/load/SLA, malicious native-code containment, mu
 Returned workflow-run metadata is validated independently of REST query filters: full source SHA, main branch, push event, exact workflow path and same-repository run URL/positive 64-bit ID. Missing/duplicate/foreign metadata and newer failed or unfinished runs block publication. Token-shaped fixture strings prove no workflow credential is inherited by staged probe processes. A false native acceptance control must raise rather than produce a green report.
 
 All test input is fictional; no real account password, signing key, customer log, classified information or third-party target is needed.
+
+## Actual compiled offline application
+
+The portable Windows lane is an additional mandatory gate: exact patched Python 3.14.10, hash-locked freezer graph and audit, complete one-file build, actual native widgets/handlers/mainloop, independent domain-result oracles, selected input controls, exact exports, invalid-input preservation, confirmed deletion and normal two-process durable reopen. Its explicit synthetic profile does not bypass domain checks or user authorization controls. Same-descriptor input and fixed mutable-file admission fixtures include actual NTFS hardlinks; unsupported POSIX FIFO and unavailable symlink creation are disclosed, with Linux tests retained. Native packaging does not replace the original source, container/cluster, cryptographic or performance gates. [Dated measured scope](reports/native-workbench-2026-11-11.md).

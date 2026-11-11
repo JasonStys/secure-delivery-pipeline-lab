@@ -9,9 +9,15 @@ A working DevSecOps reference that builds a small application, gates its release
 
 [Release 1.1.0 assets and checks](https://github.com/JasonStys/secure-delivery-pipeline-lab/releases/tag/v1.1.0) · [Current source validation](docs/reports/release-refresh-2026-11-09.md). The refreshed workflow authenticates the retained 1.0.1 baseline, reviews the new candidate, exercises real staged inventory/invalid-input behavior, verifies asserted receipts and retry, and explicitly rolls back. Publication requires every live cryptographic case to pass. [Earlier 1.0.1 measured evidence](docs/reports/validation-1.0.1.md) describes that older source, not these changes.
 
-The application is deliberately modest: a dependency-free inventory CLI using exact cents. The portfolio evidence is the **delivery system**, its trust boundaries, and its measured adversarial tests—not a collection of scanner screenshots.
+The shipped signed-example application remains a dependency-free inventory CLI using exact cents. The new offline workbench exposes its actual inventory and bounded preflight engines with practical review controls. The portfolio evidence is the **delivery system**, its trust boundaries, and its measured adversarial tests—not a collection of scanner screenshots.
 
-The downloadable zipapp contains only the six-member inventory probe. Verification, impact review and deployment management run from this repository's trusted reviewed source. There is no desktop installer or background service, and local receipt aliases are not signed attestations or authenticated human identities.
+The downloadable zipapp contains only the six-member inventory probe. Verification, impact review and deployment management run from this repository's trusted reviewed source. That signed-example zipapp is distinct from the new offline portable GUI; neither installs a background service. Local receipt aliases are not signed attestations or authenticated human identities.
+
+## Native offline workbench
+
+**Secure Delivery Offline Workbench 1.2.0** adds real native file/configuration controls, original-engine analysis, searchable findings, full evidence, exact export and durable review history. Prepared scenarios run inside this same application. [Usage, profile privacy and complete compiled-app test](docs/native-application.md) · [Dated candidate validation](docs/reports/native-workbench-2026-11-11.md).
+
+Review real inventory JSON with the original exact-cent summarizer, or inspect an authorized four-asset release with the original bounded preflight. The GUI deliberately never executes incoming applications or substitutes matching hashes for authenticated provenance. The portable Windows recipe bundles the patched runtime; no separately installed Python/Node or baked password is needed. Publication and installation are separate review steps, not implied by a source badge.
 
 ## What works
 
@@ -111,6 +117,26 @@ Every authored Python file has a generated exact-line map of definitions, parame
 
 | File | Responsibility |
 |---|---|
+| `delivery/desktop.py` | Real native Tk controls, retained worker/owner lifecycle, results, history and support. |
+| `delivery/desktop_project.py` | Original exact-cent inventory and four-asset integrity preflight adapter; no authentication bypass or execution. |
+| `delivery/desktop_io.py` | Closed bounded JSON and stable regular-descriptor input/export contracts. |
+| `delivery/desktop_state.py` | Owned durable SQLite history, immutable bundles and pre-initialization fixed-file admission. |
+| `delivery/inputs.py` | Bounded authorized source reads with descriptor identity and nonblocking special-file refusal. |
+| `scripts/build_native.py` | Actual patched-runtime one-file build and public resource/source identity binding. |
+| `scripts/native_common.py` | Collect actual Python/Tcl-Tk/freezer notices and generate authored icon. |
+| `scripts/native_entry.py` | Complete native executable entry point and explicit synthetic acceptance option. |
+| `scripts/native_acceptance.py` | Actual widgets, independent eight-workflow oracles and durable reopen journey. |
+| `scripts/test_native_app.py` | Minimal-environment actual EXE, runtime/source identity and normal two-process completion proof. |
+| `tests/test_desktop_gui.py` | Real GUI handlers, busy close and durable review controls. |
+| `tests/test_desktop_project.py` | Exact money, genuine unsigned preflight and independent wrong-identity/tamper refusals. |
+| `tests/test_desktop_io.py` | Strict JSON and bounded regular descriptor/export edge cases. |
+| `tests/test_desktop_state.py` | Owned SQLite transactions, history and immutable bundle semantics. |
+| `tests/test_native_inputs.py` | Actual stable-source file identity/limits, platform FIFO and negative cases. |
+| `tests/test_profile_admission.py` | Real fixed database/sidecar hardlink and profile alias admission fixtures. |
+| `requirements-native.lock` | Complete exact hash-locked portable freezing tools. |
+| `docs/native-application.md` | Native application purpose, controls, privacy, build and trust boundaries. |
+| `docs/reports/native-workbench-2026-11-11.md` | Dated local candidate evidence and distinct release/hosted limits. |
+| `docs/releases/v1.2.0.md` | Offline workbench candidate scope, separate from authenticated signed-example assets. |
 | `delivery/__init__.py` | Authored runtime version; no runtime dependencies. |
 | `delivery/__main__.py` | Explicit trust-policy CLI: preflight, verify, impact, promote, rollback. |
 | `delivery/io.py` | Bounded regular-file reads, duplicate-safe JSON and atomic replacement. |
