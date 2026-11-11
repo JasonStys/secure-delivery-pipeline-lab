@@ -127,6 +127,8 @@ Every authored Python file has a generated exact-line map of definitions, parame
 | `scripts/native_entry.py` | Complete native executable entry point and explicit synthetic acceptance option. |
 | `scripts/native_acceptance.py` | Actual widgets, independent eight-workflow oracles and durable reopen journey. |
 | `scripts/test_native_app.py` | Minimal-environment actual EXE, runtime/source identity and normal two-process completion proof. |
+| `tests/test_runner_network_policy.py` | Actual authored APT-step admission/order/authentication mutants; whole YAML parsed by actionlint. |
+| `docs/reports/runner-network-2026-11-11.md` | Actual setup DNS observations, bounded signed-mirror acquisition and explicit interpretation limits. |
 | `tests/test_desktop_gui.py` | Real GUI handlers, busy close and durable review controls. |
 | `tests/test_desktop_project.py` | Exact money, genuine unsigned preflight and independent wrong-identity/tamper refusals. |
 | `tests/test_desktop_io.py` | Strict JSON and bounded regular descriptor/export edge cases. |
@@ -208,3 +210,7 @@ Future extensions could add an approved hosted deployment or a reusable isolated
 Start with the [organized handbook](docs/handbook.md) for current usage, design, security and test guidance. Reviewed downloadable editions: [project-guide.docx](docs/reports/project-guide.docx) · [validation-review.docx](docs/reports/validation-review.docx) · [validation-evidence.xlsx](docs/reports/validation-evidence.xlsx).
 
 [Publication identities and source scope](docs/reports/publications.json) · [Documentation validation record](docs/reports/documentation-refresh-2026-11-09.md). Historical results retain their own tested revision and date.
+
+## Disposable-runner network boundary
+
+[Observed setup failures and signed APT acquisition hardening](docs/reports/runner-network-2026-11-11.md). Source/core/native assertions remain mandatory; mirror selection is not a proven DNS repair or permission to bypass unavailable dependencies.
