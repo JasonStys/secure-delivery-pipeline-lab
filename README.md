@@ -215,3 +215,8 @@ Start with the [organized handbook](docs/handbook.md) for current usage, design,
 ## Disposable-runner network boundary
 
 [Observed setup failures and signed APT acquisition hardening](docs/reports/runner-network-2026-11-11.md). Source/core/native assertions remain mandatory; mirror selection is not a proven DNS repair or permission to bypass unavailable dependencies.
+
+
+## Current installed application guide
+
+The published **1.2.0** application has a [four-page guide](docs/reports/windows-application-guide-1.2.0.docx) with actual installed screenshots, a practical journey, immutable source excerpts and operating limits. The [installed validation report](docs/reports/installed-windows-1.2.0-2026-11-11.md) explains the results and [review manifest](docs/reports/windows-application-guide-1.2.0.json) records exact source, image and page identities. Historical documentation remains available.

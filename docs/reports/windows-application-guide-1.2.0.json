@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "repository": "secure-delivery-pipeline-lab",
+  "runtimeVersion": "1.2.0",
+  "runtimeSource": "83df1d81fb48f29256efab51b742a96a5776cc50",
+  "createdAt": "2026-11-11T16:20:11.529Z",
+  "author": "Jason Stys",
+  "document": "windows-application-guide-1.2.0.docx",
+  "sha256": "93b8dfa0582e91f1a9877777fdc471cf9a1d85851d2cbd646f959eea410e86c8",
+  "screenshots": [
+    {
+      "file": "selected-evidence.png",
+      "sha256": "368731c283d16e7db903c3943fd9cf443efa04c5cd9e7a1c5984f5f20aa30da9",
+      "width": 1276,
+      "height": 899,
+      "caption": "The installed inventory operation calculates actual supplied stock totals; inventory arithmetic is distinct from release authentication."
+    },
+    {
+      "file": "owner-unknown-review.png",
+      "sha256": "ae0fd881044fc09897a2bbc705608f7a1d2b31093b00a7276db59e86bd8a5774",
+      "width": 1276,
+      "height": 899,
+      "caption": "The installed release review explicitly states that authentication is not verified. It preserves the expected tuple and integrity findings."
+    }
+  ],
+  "snippets": [
+    {
+      "file": "delivery/desktop_project.py",
+      "first": 240,
+      "last": 258,
+      "sha256": "69be0062bd64db8b4518530186d155b7264b3dd5013e3b18af6d371b8d2aa3cc",
+      "url": "https://github.com/JasonStys/secure-delivery-pipeline-lab/blob/83df1d81fb48f29256efab51b742a96a5776cc50/delivery/desktop_project.py#L240"
+    }
+  ],
+  "observedTests": [
+    {
+      "name": "Independent distribution",
+      "observed": "Downloaded provider assets, sidecar and installed file identities matched. The complete installed app was used; installation resources remained byte-identical.",
+      "result": "Passed"
+    },
+    {
+      "name": "Actual app use and restart",
+      "observed": "Eight real installed workflows and eight evidence bundles passed unchanged full consumer assertions. Two normal launches retained history and exact exported bytes.",
+      "result": "Passed"
+    },
+    {
+      "name": "Source and security",
+      "observed": "All current main workflows passed before publication. All configured exact-source processed CodeQL categories had zero raw findings and zero open alerts.",
+      "result": "Passed"
+    },
+    {
+      "name": "Individual shortcut",
+      "observed": "Desktop and Start-menu targets were read back against the installed version. Normal default-profile shortcut activation is separate from full installed executable acceptance.",
+      "result": "Verified"
+    }
+  ],
+  "visualReview": "all four pages individually approved",
+  "reviewer": "audit_cyber",
+  "reviewedPageHashes": {
+    "page-1.png": "84d9e9ab27fb170a881be4cf484abc9cd8196c2909517789e041bee39e7a78e5",
+    "page-2.png": "06003b0d8d98e1d0da93b4652305785a1b7300b8e938dcf060e1ceae49d7e5a2",
+    "page-3.png": "49d220738f501fb54058e4bfcf9973706611fce6b29515b685ba40268706a4af",
+    "page-4.png": "c128271650974f8974d8b35384c4b7b76e18c427e4923d0ea133f720f9037162"
+  },
+  "privateTestInputsOnly": true
+}
