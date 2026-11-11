@@ -42,3 +42,7 @@ Promotion/rollback serializes only one disposable root with an OS advisory lock.
 ## Consequences
 
 No third-party application runtime dependencies, public backend, user accounts, permanent signing secret, arbitrary command hook or production mutation. Verification needs an online GitHub CLI trust path. Tests differentiate mocked verifier-policy unit tests from actual published-release signature tests. New versions can reuse the mechanism, but their source SHA/tag remains an explicit trust decision.
+
+## Native offline review layer
+
+The native application separates a main-thread Tk workbench, a single retained analysis worker, a project adapter calling the original engines, and an owner-local SQLite history. Inputs are bounded stable ordinary-file reads. Full results are committed as immutable evidence bundles before the view refreshes; display filters do not mutate those bundles or original counts. Exit waits for the same worker before closing the database and owner lock. Public build resources, actual Python DLL and source/dirty metadata are bound before profile initialization. This is a new application entry, not a replacement of the existing CLI or live hosted drills. [Purpose-specific controls and limits](native-application.md).
