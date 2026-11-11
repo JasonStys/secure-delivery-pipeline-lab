@@ -127,8 +127,9 @@ Every authored Python file has a generated exact-line map of definitions, parame
 | `scripts/native_entry.py` | Complete native executable entry point and explicit synthetic acceptance option. |
 | `scripts/native_acceptance.py` | Actual widgets, independent eight-workflow oracles and durable reopen journey. |
 | `scripts/test_native_app.py` | Minimal-environment actual EXE, runtime/source identity and normal two-process completion proof. |
-| `tests/test_runner_network_policy.py` | Actual authored APT-step admission/order/authentication mutants; whole YAML parsed by actionlint. |
 | `docs/reports/runner-network-2026-11-11.md` | Actual setup DNS observations, bounded signed-mirror acquisition and explicit interpretation limits. |
+| `scripts/check_tk_runtime.py` | Actual selected-Python native imports and loaded Tcl requirement; no display/install fallback. |
+| `tests/test_tk_runtime.py` | Real isolated native interpreter plus loader/query/version and actual workflow negative controls. |
 | `tests/test_desktop_gui.py` | Real GUI handlers, busy close and durable review controls. |
 | `tests/test_desktop_project.py` | Exact money, genuine unsigned preflight and independent wrong-identity/tamper refusals. |
 | `tests/test_desktop_io.py` | Strict JSON and bounded regular descriptor/export edge cases. |

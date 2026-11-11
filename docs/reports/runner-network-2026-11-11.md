@@ -12,6 +12,18 @@ Primary contracts: [Ubuntu Noble sources.list](https://manpages.ubuntu.com/manpa
 
 The former floating `ubuntu-latest` quality label resolved to Ubuntu 26.04.1 in the observed failed jobs. The two Python quality lanes now explicitly select Ubuntu 24.04 for this reviewed source/keyring contract, retaining Python 3.12/3.14. Other security/container jobs and their image controls are unchanged; this does not claim a successful 26.04 application validation.
 
-## Actual follow-up validation
+## Historical mirror-policy local validation
 
 [Observed failed PR run](https://github.com/JasonStys/secure-delivery-pipeline-lab/actions/runs/43035258794). Seven authored-step policy cases, including six missing/late/unsafe mutations, passed locally. The complete source suite passed 224 tests with three explicit capability/platform skips and 94.16% combined coverage, retaining its original 85% floor. Strict lint/types/maps/native actionlint passed. Original clean compiled proof at `ca9815f91e875795032e04ae3dea8cfc611fc3d8` remains historical; a later source-bound native proof and hosted gates must be observed independently. No actual DNS success is claimed by these local checks.
+
+## Selected-interpreter requirement correction
+
+The next exact-head logs still failed APT DNS before product assertions. Every complete new-package list contained only `blt`, `python3-tk` and `tk8.6-blt2.5`; the logs did not independently establish that Tcl/Tk libraries were loaded. Installing the distribution's Python Tk wrapper was the wrong contract for the separate `actions/setup-python` interpreter. The workflow now requires that actual selected interpreter to import both `tkinter` and `_tkinter`, construct a real display-free Tcl interpreter, execute version queries and match the native extension's supported Tcl/Tk family. Failure is nonzero, with no install fallback, ignored error, retry or skip. The actual graphics/window/mainloop contract remains separately tested by the unchanged full compiled Windows application.
+
+The redundant distro Tk package install and its now-unused mirror configuration are removed from source-quality jobs. Genuine independent APT consumers, where present, retain their signed-mirror/authentication controls. Original core/native/security/sanitizer cases, floors and deadlines are unchanged. Only obsolete Tk-APT policy fixtures, where no genuine APT consumer remains, are replaced by real runtime/negative-workflow tests. Existing independent APT consumers and their policy fixtures are retained. A real isolated child supplies the positive runtime evidence, while missing native/wrapper loaders, constructor/query/version failures and six actual workflow mutations must fail. New hosted checks must establish actual selected-runtime availability; the DNS failures are retained and are not declared repaired.
+
+Primary behavior: [Python 3.14 Tkinter architecture and Tcl constructor](https://docs.python.org/3.14/library/tkinter.html), [setup-python selected interpreter behavior](https://github.com/actions/setup-python). A no-display Tcl query does not claim a Linux/macOS GUI display was exercised.
+
+### Actual selected-runtime local checks
+
+The actual isolated Windows CPython 3.14.10 child imported `_tkinter`/`tkinter`, created and queried Tcl 9.0.4, and matched its native Tcl/Tk 9.0 build families. All 16 runtime/workflow controls passed, including deliberately missing native/wrapper loaders and rejected initialization/query/version/ignored/conditional/late/weak-gate cases. The complete local suite passed 233 tests with 3 explicitly reported platform/capability skips and 94.16% combined coverage against its unchanged 85% floor. These are local Windows observations; fresh hosted lanes must supply their own actual selected-runtime proof. No claim of repaired DNS or graphical Linux/macOS testing is made.

@@ -32,36 +32,8 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: ${{ matrix.python }}
-      - name: Bound official mirror access on the disposable Ubuntu runner
-        if: runner.os == 'Linux'
-        timeout-minutes: 1
-        shell: bash
-        run: |
-          set -euo pipefail
-          test "$GITHUB_ACTIONS" = "true"
-          test "$RUNNER_OS" = "Linux"
-          test "$(uname -m)" = "x86_64"
-          . /etc/os-release
-          test "$ID" = "ubuntu"
-          test "$VERSION_ID" = "24.04"
-          test -f /etc/apt/apt-mirrors.txt
-          test -f /usr/share/keyrings/ubuntu-archive-keyring.gpg
-          grep -Eq '^URIs:[[:space:]]+mirror[+]file:/etc/apt/apt-mirrors[.]txt[[:space:]]*$' /etc/apt/sources.list.d/ubuntu.sources
-          grep -Eq '^Signed-By:[[:space:]]+/usr/share/keyrings/ubuntu-archive-keyring[.]gpg[[:space:]]*$' /etc/apt/sources.list.d/ubuntu.sources
-          # Keep suites/components/keyrings unchanged; no Azure mirror or unsigned fallback.
-          printf 'https://archive.ubuntu.com/ubuntu/\tpriority:1\nhttps://security.ubuntu.com/ubuntu/\tpriority:2\n' |
-            sudo tee /etc/apt/apt-mirrors.txt >/dev/null
-          # Bound existing acquisition, not test budgets; explicitly add no retries.
-          printf '%s\n' 'Acquire::Retries "0";' 'Acquire::http::Timeout "15";' 'Acquire::https::Timeout "15";' |
-            sudo tee /etc/apt/apt.conf.d/zzzz-portfolio-network >/dev/null
-          apt_network_config="$(apt-config dump Acquire::Retries Acquire::http::Timeout Acquire::https::Timeout)"
-          printf '%s\n' "$apt_network_config"
-          grep -Fx 'Acquire::Retries "0";' <<< "$apt_network_config"
-          grep -Fx 'Acquire::http::Timeout "15";' <<< "$apt_network_config"
-          grep -Fx 'Acquire::https::Timeout "15";' <<< "$apt_network_config"
-      - name: Install native Tk import support on Linux
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y python3-tk
+      - name: Require actual selected-Python Tk runtime (no display)
+        run: python -I scripts/check_tk_runtime.py
       - name: Install hash-locked development tools
         run: python -m pip install --require-hashes -r requirements-dev.lock
       - name: Validate authored code and measured behavior
